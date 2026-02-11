@@ -1,1 +1,0 @@
-# jechkata.github.io

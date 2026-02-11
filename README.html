@@ -1,0 +1,126 @@
+# jechkata.github.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Love Gauge</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        #ui-wrapper {
+            text-align: center;
+            width: 80%;
+            transition: transform 0.05s; /* Smooths the visual shake */
+        }
+
+        .heart {
+            font-size: 80px;
+            margin: 20px 0;
+            display: inline-block;
+            transition: transform 0.1s;
+        }
+
+        input[type=range] {
+            width: 100%;
+            margin: 30px 0;
+            accent-color: #ff4d4d;
+        }
+
+        #start-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-overlay">
+        <button onclick="initiateSequence()">Begin the Affection Test</button>
+    </div>
+
+    <div id="ui-wrapper">
+        <h1 id="headline">How much do you love me?</h1>
+        <div id="heart" class="heart">❤️</div>
+        <input type="range" id="loveSlider" min="0" max="100" value="0">
+        <p id="status">Drag to increase intensity...</p>
+    </div>
+
+    <script>
+        const slider = document.getElementById('loveSlider');
+        const wrapper = document.getElementById('ui-wrapper');
+        const heart = document.getElementById('heart');
+        const status = document.getElementById('status');
+        const body = document.body;
+
+        function initiateSequence() {
+            document.getElementById('start-overlay').style.display = 'none';
+        }
+
+        slider.addEventListener('input', () => {
+            const val = parseInt(slider.value);
+            
+            // 1. Physical Haptics (Android)
+            if ("vibrate" in navigator) {
+                // Creates a stuttering pulse that gets tighter as she slides
+                navigator.vibrate([val * 2, 50 - (val / 2)]);
+            }
+
+            // 2. Visual Haptics (iOS/General)
+            // As the slider goes up, the screen starts jittering
+            const intensity = val / 15;
+            const x = (Math.random() - 0.5) * intensity;
+            const y = (Math.random() - 0.5) * intensity;
+            wrapper.style.transform = `translate(${x}px, ${y}px)`;
+
+            // 3. The Visual Escalation
+            heart.style.transform = `scale(${1 + val / 30})`;
+            
+            if (val > 80) {
+                body.style.backgroundColor = "#4a0000";
+                status.innerText = "SYSTEM OVERLOAD: CRITICAL AFFECTION!";
+                status.style.color = "#ff4d4d";
+            } else if (val > 40) {
+                body.style.backgroundColor = "#1a1a1a";
+                status.innerText = "Keep going... don't stop now.";
+                status.style.color = "white";
+            } else {
+                status.innerText = "Drag to increase intensity...";
+            }
+
+            // The "Climax"
+            if (val == 100) {
+                document.getElementById('headline').innerText = "FOREVER CAPTURED!";
+                if ("vibrate" in navigator) navigator.vibrate([500, 100, 500, 100, 1000]);
+            }
+        });
+    </script>
+</body>
+</html>
